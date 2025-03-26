@@ -1267,7 +1267,6 @@
         // Функция для отображения лоадера
         function showLoader(message = 'Загрузка...', status = 'Пожалуйста, подождите...') {
             // Обновляем текст в лоадере
-            document.getElementById('loading-file').textContent = message;
             document.getElementById('loading-status').textContent = status;
 
             // Сбрасываем прогресс-бар
@@ -1288,11 +1287,6 @@
         function updateLoaderProgress(percent, message = null, status = null) {
             // Обновляем прогресс-бар
             document.getElementById('progress-bar').style.width = `${percent}%`;
-
-            // Обновляем сообщения, если они предоставлены
-            if (message) {
-                document.getElementById('loading-file').textContent = message;
-            }
 
             if (status) {
                 document.getElementById('loading-status').textContent = status || `Прогресс: ${percent}%`;
