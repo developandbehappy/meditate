@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приложение для медитации</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #7f7fd5, #86a8e7, #91eae4);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: #5a5a8f;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .meditation-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .audio-selection,
+        .time-selection,
+        .interval-selection,
+        .timeline-selection,
+        .custom-time-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        select,
+        button,
+        input[type="number"],
+        input[type="password"] {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #d0d0d0;
+            font-size: 1rem;
+            background-color: white;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .timer-display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #5a5a8f;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        #start-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #pause-btn {
+            background-color: #FFC107;
+            color: #333;
+        }
+
+        #stop-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-style: italic;
+            color: #5a5a8f;
+            min-height: 24px;
+        }
+
+        .audio-progress {
+            margin-top: 10px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .current-time {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .time-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            justify-content: space-between;
+        }
+
+        .time-control-btn {
+            padding: 8px 12px;
+            background-color: #5a5a8f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .time-control-btn:hover {
+            background-color: #7070af;
+        }
+
+        .audio-slider {
+            width: 100%;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .timeline-btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background-color: #5a5a8f;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-btn:hover {
+            background-color: #7070af;
+            transform: translateY(-1px);
+        }
+
+        .timeline-btn.recent {
+            background-color: #ff7f50;
+        }
+
+        .recent-time {
+            font-weight: bold;
+            color: #ff7f50;
+            margin-bottom: 5px;
+        }
+
+        .login-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .password-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #login-btn {
+            align-self: center;
+            width: 100%;
+            background-color: #5a5a8f;
+            color: white;
+        }
+
+
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loader-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-info {
+            text-align: center;
+        }
+
+        .progress-container {
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin: 15px 0;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #3498db;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        #loading-file,
+        #loading-status {
+            margin: 10px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .files-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #3498db;
+        }
+
+        .file-path {
+            font-size: 14px;
+            color: #777;
+            word-break: break-all;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .timer-display {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .timer-display {
+                font-size: 2rem;
+                margin: 15px 0;
+            }
+
+            .time-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            select,
+            button,
+            input[type="number"],
+            input[type="password"] {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .timeline-btn {
+                margin: 3px;
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="main-container">
+        <!-- Панель входа (появляется если пользователь не авторизован) -->
+        <div id="login-container" class="login-panel">
+            <h1>Доступ к медитации</h1>
+            <div class="password-container">
+                <label for="password">Введите пароль:</label>
+                <input type="password" id="password" placeholder="Введите пароль для доступа">
+            </div>
+            <button id="login-btn" class="btn">Войти</button>
+            <div class="message" id="login-message"></div>
+        </div>
+
+        <div id="loader" class="loader-container" style="display: none;">
+            <div class="loader-box">
+                <div class="spinner"></div>
+                <div class="loader-info">
+                    <div id="loading-file">Загрузка...</div>
+                    <div class="progress-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <div id="loading-status">Пожалуйста, подождите...</div>
+                </div>
+            </div>
+        </div>
+        <!-- Основная панель медитации (скрыта до авторизации) -->
+        <div id="meditation-container" style="display:none;">
+            <h1>Медитация</h1>
+
+            <div class="meditation-panel">
+                <div class="audio-selection">
+                    <label for="audio-select">Выберите аудио для медитации:</label>
+                    <select id="audio-select">
+                        <option value="silence">Тишина</option>
+                    </select>
+                </div>
+
+                <div id="recent-time-container" class="recent-time" style="display: none;">
+                    Последнее воспроизведение: <span id="recent-time-value"></span>
+                </div>
+
+                <div id="timeline-container" class="timeline-selection" style="display: none;">
+                    <label>Начать воспроизведение с таймлайна:</label>
+                    <div id="timeline-buttons"></div>
+                </div>
+
+                <div class="audio-progress">
+                    <div class="current-time">
+                        <span id="audio-time-display">Воспроизведение: 00:00 / 00:00</span>
+                        <span id="audio-duration"></span>
+                    </div>
+                    <input type="range" id="audio-slider" class="audio-slider" min="0" max="100" value="0">
+                    <div class="time-controls">
+                        <button class="time-control-btn" id="backward-btn">- 15 сек</button>
+                        <button class="time-control-btn" id="forward-btn">+ 15 сек</button>
+                    </div>
+                </div>
+
+                <div id="interval-container" class="interval-selection" style="display: none;">
+                    <label for="interval-select">Интервал воспроизведения:</label>
+                    <select id="interval-select">
+                        <option value="1">Каждую минуту</option>
+                        <option value="2">Каждые 2 минуты</option>
+                        <option value="5">Каждые 5 минут</option>
+                        <option value="10" selected>Каждые 10 минут</option>
+                        <option value="15">Каждые 15 минут</option>
+                        <option value="20">Каждые 20 минут</option>
+                        <option value="30">Каждые 30 минут</option>
+                    </select>
+                </div>
+
+                <div class="time-selection">
+                    <label for="timer-select">Установить таймер:</label>
+                    <select id="timer-select">
+                        <option value="0">Без ограничения</option>
+                        <option value="5">5 минут</option>
+                        <option value="10">10 минут</option>
+                        <option value="15">15 минут</option>
+                        <option value="20">20 минут</option>
+                        <option value="30">30 минут</option>
+                        <option value="45">45 минут</option>
+                        <option value="60">60 минут</option>
+                        <option value="custom">Свое время</option>
+                    </select>
+                </div>
+
+                <div id="custom-time-container" class="custom-time-selection" style="display: none;">
+                    <label for="custom-minutes">Установите свое время (минуты):</label>
+                    <input type="number" id="custom-minutes" min="1" max="180" value="10">
+                </div>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" id="reminder-checkbox" checked>
+                    <label for="reminder-checkbox">Звуковое напоминание каждые 10 минут</label>
+                </div>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" id="loop-checkbox">
+                    <label for="loop-checkbox">Зацикливать аудио при завершении</label>
+                </div>
+
+                <div class="timer-display">
+                    <span id="minutes">00</span>:<span id="seconds">00</span>
+                </div>
+
+                <div class="controls">
+                    <button id="start-btn" class="btn">Начать</button>
+                    <button id="pause-btn" class="btn" disabled>Пауза</button>
+                    <button id="stop-btn" class="btn" disabled>Стоп</button>
+                </div>
+            </div>
+
+            <div class="message" id="message"></div>
+        </div>
+    </div>
+
+    <audio id="reminder-audio">
+        <source src="./audio/zvon.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="complete-audio">
+        <source src="./audio/end.m4a" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Проверка авторизации
+            const isAuthenticated = localStorage.getItem('meditation_authenticated') === 'true';
+            const loginContainer = document.getElementById('login-container');
+            const meditationContainer = document.getElementById('meditation-container');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('login-btn');
+            const loginMessage = document.getElementById('login-message');
+
+            // Если пользователь уже авторизован, показываем приложение
+            if (isAuthenticated) {
+                loginContainer.style.display = 'none';
+                meditationContainer.style.display = 'block';
+            }
+
+            // Обработчик кнопки входа
+            loginBtn.addEventListener('click', () => {
+                if (passwordInput.value === '1234Aa') {
+                    localStorage.setItem('meditation_authenticated', 'true');
+                    loginContainer.style.display = 'none';
+                    meditationContainer.style.display = 'block';
+                } else {
+                    loginMessage.textContent = 'Неверный пароль. Пожалуйста, попробуйте еще раз.';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            });
+
+            // Обработчик ввода пароля по клавише Enter
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
+
+            function init(audioInfo) {
+                // Функция для создания аудиоэлементов и добавления их в DOM
+                function createAudioElements(audioData, targetElement = document.body) {
+                    // Создаем массив промисов для каждого аудиофайла
+                    const audioPromises = Object.keys(audioData)
+                        .filter(key => audioData[key].src) // Фильтруем только элементы с src
+                        .map(key => {
+                            const audio = audioData[key];
+
+                            return new Promise((resolve, reject) => {
+                                // Создаем элемент <audio>
+                                const audioElement = document.createElement('audio');
+                                audioElement.id = audio.id;
+
+                                // Обработчики событий
+                                audioElement.addEventListener('loadedmetadata', () => {
+                                    console.log(`Audio ${audio.id} loaded`);
+                                    resolve(audioElement); // Разрешаем промис когда аудио загружено
+                                }, false);
+
+                                audioElement.addEventListener('error', (e) => {
+                                    console.error(`Failed to load audio ${audio.id}:`, e);
+                                    reject(e); // Отклоняем промис при ошибке
+                                }, false);
+
+                                // Создаем элемент <source>
+                                const sourceElement = document.createElement('source');
+                                sourceElement.src = audio.src;
+                                sourceElement.type = 'audio/mpeg';
+
+                                // Добавляем <source> внутрь <audio>
+                                audioElement.appendChild(sourceElement);
+
+                                // Добавляем <audio> в указанный элемент
+                                targetElement.appendChild(audioElement);
+
+                                // Сохраняем ссылку на элемент в объекте
+                                audio.element = audioElement;
+
+                                // Начинаем загрузку
+                                audioElement.load();
+                            });
+                        });
+
+                    // Возвращаем Promise.all, который разрешится, когда все аудио загрузятся
+                    return Promise.all(audioPromises);
+                }
+
+                // Функция для добавления элементов <option> в <select>
+                function populateSelect(audioData, selectId) {
+                    const selectElement = document.getElementById(selectId);
+
+                    if (!selectElement) {
+                        console.error(`Элемент <select> с id="${selectId}" не найден.`);
+                        return;
+                    }
+
+                    Object.keys(audioData).forEach(key => {
+                        const audio = audioData[key];
+
+                        // Пропускаем, если у аудио нет метки (label)
+                        if (!audio.label) return;
+
+                        // Создаем элемент <option>
+                        const optionElement = document.createElement('option');
+                        optionElement.value = key; // Устанавливаем значение
+                        optionElement.textContent = audio.label; // Устанавливаем текст
+
+                        selectElement.appendChild(optionElement);
+                    });
+                }
+
+                // xxx remove if not url param
+                let params = new URLSearchParams(document.location.search);
+                let xxx = params.get("xxx");
+                if (!xxx) {
+                    delete audioInfo.xxx;
+                    delete audioInfo.xxx2;
+                }
+
+                // Вызов функций
+                showLoader();
+                return createAudioElements(audioInfo).then(() => {
+                    populateSelect(audioInfo, 'audio-select');
+                    hideLoader();
+                });
+
+            }
+
+            // Получаем элементы DOM
+            const audioSelect = document.getElementById('audio-select');
+            const intervalContainer = document.getElementById('interval-container');
+            const intervalSelect = document.getElementById('interval-select');
+            const timerSelect = document.getElementById('timer-select');
+            const customTimeContainer = document.getElementById('custom-time-container');
+            const customMinutesInput = document.getElementById('custom-minutes');
+            const reminderCheckbox = document.getElementById('reminder-checkbox');
+            const loopCheckbox = document.getElementById('loop-checkbox');
+            const minutesDisplay = document.getElementById('minutes');
+            const secondsDisplay = document.getElementById('seconds');
+            const startBtn = document.getElementById('start-btn');
+            const pauseBtn = document.getElementById('pause-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const messageDiv = document.getElementById('message');
+            const audioTimeDisplay = document.getElementById('audio-time-display');
+            const timelineContainer = document.getElementById('timeline-container');
+            const timelineButtons = document.getElementById('timeline-buttons');
+            const reminderAudio = document.getElementById('reminder-audio');
+            const completeAudio = document.getElementById('complete-audio');
+            const audioSlider = document.getElementById('audio-slider');
+            const backwardBtn = document.getElementById('backward-btn');
+            const forwardBtn = document.getElementById('forward-btn');
+            const recentTimeContainer = document.getElementById('recent-time-container');
+            const recentTimeValue = document.getElementById('recent-time-value');
+
+            // Объект с информацией о типах аудио
+            const audioInfo = {
+                'hoff_short': {
+                    id: 'hoff_short',
+                    src: './audio/hoff_1min.mp3',
+                    label: 'Хофф 1 минута',
+                    timeLines: [
+                        { name: 'Начало', time: 0 },
+                    ],
+                    isLoop: true
+                },
+                'hoff': {
+                    id: 'hoff',
+                    src: './audio/hoff_full.mp3',
+                    label: 'Вим хоф полная',
+                    timeLines: [
+                        { name: 'Начало', time: 5 },
+                        { name: '2 минуты', time: 798 },
+                        { name: '3 минуты', time: 1682 },
+                    ],
+                    isLoop: true
+                },
+                'gita': {
+                    id: 'gita',
+                    src: './audio/gita.m4a',
+                    label: 'Авадхутагита',
+                    timeLines: [
+                        { name: 'Начало', time: 0 }
+                    ],
+                    isLoop: true
+                },
+                'estas': {
+                    id: 'estas',
+                    src: './audio/estas.m4a',
+                    label: 'Estas (Тропа шаманов)',
+                    timeLines: [
+                        { name: 'Начало', time: 10 }
+                    ],
+                    isLoop: true
+                },
+                'samadhi': {
+                    id: 'samadhi',
+                    src: './audio/samadhi.m4a',
+                    label: 'Самадхи 3ч',
+                    timeLines: [
+                        { name: 'Начало', time: 0 }
+                    ],
+                    isLoop: true
+                },
+                'deputat_monk': {
+                    id: 'deputat_monk',
+                    src: './audio/deputat_monk.mp3',
+                    label: 'Из депутата в монахи',
+                    timeLines: [
+                        { name: 'Начало', time: 0 }
+                    ],
+                    isLoop: true
+                },
+                'imram': {
+                    id: 'imram',
+                    src: './audio/imram.m4a',
+                    label: 'Имрам 70 минут',
+                    timeLines: [
+                        { name: 'Начало', time: 15 }
+                    ],
+                    isLoop: true
+                },
+                'xxx': {
+                    id: 'xxx',
+                    src: './audio/xxx.mp3',
+                    label: 'xxx',
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: false,
+                    needSave: false,
+                },
+                'xxx2': {
+                    id: 'xxx2',
+                    src: './audio/xxx-2.mp3',
+                    label: 'xxx-2',
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: false,
+                    needSave: false,
+                },
+                'reminder': {
+                    id: 'reminder',
+                    src: './audio/zvon.mp3',
+                    label: 'Напоминание (короткий сигнал)',
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: false
+                },
+                'silence': {
+                    element: null,
+                    timeLines: [],
+                    isLoop: false
+                }
+            };
+
+
+
+            init(audioInfo);
+
+            // Переменные для таймера
+            let timerInterval = null;
+            let audioUpdateInterval = null;
+            let secondsElapsed = 0;
+            let totalSeconds = 0;
+            let isPaused = false;
+            let currentAudio = null;
+            let lastReminderTime = 0;
+            let lastIntervalTime = 0;
+            let currentAudioType = '';
+            let isSliderBeingDragged = false;
+
+            // Функция для форматирования времени в формат MM:SS
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            // Функция для сохранения последней позиции воспроизведения в localStorage
+            function saveLastPlaybackPosition(audioType, position) {
+                if (audioType !== 'silence') {
+                    localStorage.setItem(`last_position_${audioType}`, position);
+                    // localStorage.setItem(`last_played_audio`, audioType);
+                }
+            }
+
+            // Функция для получения последней позиции воспроизведения из localStorage
+            function getLastPlaybackPosition(audioType) {
+                return parseFloat(localStorage.getItem(`last_position_${audioType}`)) || 0;
+            }
+
+            // Функция для обновления отображения времени аудио и ползунка
+            function updateAudioTimeDisplay() {
+                if (currentAudio && currentAudioType !== 'silence') {
+                    const currentTime = currentAudio.currentTime;
+                    const duration = currentAudio.duration || 0;
+
+                    audioTimeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+
+                    // Обновляем положение ползунка только если он не перетаскивается
+                    if (!isSliderBeingDragged) {
+                        audioSlider.min = 0;
+                        audioSlider.max = duration;
+                        audioSlider.value = currentTime;
+                    }
+
+                    // Сохраняем последнюю позицию воспроизведения
+                    saveLastPlaybackPosition(currentAudioType, currentTime);
+                } else {
+                    audioTimeDisplay.textContent = '00:00 / 00:00';
+                    audioSlider.value = 0;
+                }
+            }
+
+            // Функция для проверки наличия последней сессии воспроизведения
+            function checkForLastPlaybackSession(audioType) {
+                const lastPosition = getLastPlaybackPosition(audioType);
+
+                if (lastPosition > 0) {
+                    recentTimeContainer.style.display = 'none';
+                    recentTimeValue.textContent = formatTime(lastPosition);
+
+                    // Добавляем "недавний" таймлайн
+                    const recentTimelineBtn = document.createElement('span');
+                    recentTimelineBtn.className = 'timeline-btn recent';
+                    recentTimelineBtn.textContent = `Последнее место (${formatTime(lastPosition)})`;
+                    recentTimelineBtn.addEventListener('click', () => {
+                        if (currentAudio && currentAudioType === audioType) {
+                            currentAudio.currentTime = lastPosition;
+                            if (isPaused) {
+                                currentAudio.play().catch(e => console.error('Ошибка воспроизведения:', e));
+                                isPaused = false;
+                                pauseBtn.textContent = 'Пауза';
+                            }
+                            messageDiv.textContent = `Перемотка к последнему месту воспроизведения: ${formatTime(lastPosition)}`;
+                        } else {
+                            messageDiv.textContent = 'Сначала начните медитацию';
+                        }
+                    });
+
+                    // Добавляем кнопку в начало списка
+                    timelineButtons.appendChild(recentTimelineBtn);
+                } else {
+                    recentTimeContainer.style.display = 'none';
+                }
+            }
+
+            // Функция для создания кнопок таймлайнов
+            function createTimelineButtons(audioType) {
+                timelineButtons.innerHTML = '';
+
+                if (audioType === 'silence' || !audioInfo[audioType]?.timeLines) {
+                    timelineContainer.style.display = 'none';
+                    return;
+                }
+
+                timelineContainer.style.display = 'flex';
+
+                audioInfo[audioType].timeLines.forEach(timeline => {
+                    const button = document.createElement('span');
+                    button.className = 'timeline-btn';
+                    button.textContent = `${timeline.name} (${formatTime(timeline.time)})`;
+                    button.addEventListener('click', () => {
+                        if (!startBtn.disabled) { startTimer() }
+                        if (currentAudio && currentAudioType === audioType) {
+                            currentAudio.currentTime = timeline.time;
+                            if (isPaused) {
+                                currentAudio.play().catch(e => console.error('Ошибка воспроизведения:', e));
+                                isPaused = false;
+                                pauseBtn.textContent = 'Пауза';
+                            }
+                            messageDiv.textContent = `Перемотка к таймлайну: ${timeline.name}`;
+                        } else {
+                            messageDiv.textContent = 'Сначала начните медитацию';
+                        }
+                    });
+                    timelineButtons.appendChild(button);
+                });
+
+                // Проверяем наличие последней сессии
+                checkForLastPlaybackSession(audioType);
+            }
+
+            // Отображаем/скрываем настройку интервала и таймлайны при изменении аудио
+            audioSelect.addEventListener('change', () => {
+                const selectedAudio = audioSelect.value;
+                const audioObj = audioInfo[selectedAudio];
+
+                if (audioObj && !audioObj.isLoop && selectedAudio !== 'silence') {
+                    intervalContainer.style.display = 'flex';
+                } else {
+                    intervalContainer.style.display = 'none';
+                }
+
+                createTimelineButtons(selectedAudio);
+            });
+
+            // Отображаем/скрываем поле для ввода своего времени
+            timerSelect.addEventListener('change', () => {
+                if (timerSelect.value === 'custom') {
+                    customTimeContainer.style.display = 'flex';
+                } else {
+                    customTimeContainer.style.display = 'none';
+                }
+            });
+
+            // Обработчики для ползунка аудио
+            audioSlider.addEventListener('mousedown', () => {
+                isSliderBeingDragged = true;
+            });
+
+            audioSlider.addEventListener('mouseup', () => {
+                if (currentAudio && currentAudioType !== 'silence') {
+                    currentAudio.currentTime = audioSlider.value;
+                }
+                isSliderBeingDragged = false;
+            });
+
+            audioSlider.addEventListener('touchstart', () => {
+                isSliderBeingDragged = true;
+            });
+
+            audioSlider.addEventListener('touchend', () => {
+                if (currentAudio && currentAudioType !== 'silence') {
+                    currentAudio.currentTime = audioSlider.value;
+                }
+                isSliderBeingDragged = false;
+            });
+
+            audioSlider.addEventListener('input', () => {
+                if (currentAudio && currentAudioType !== 'silence') {
+                    audioTimeDisplay.textContent = `${formatTime(audioSlider.value)} / ${formatTime(currentAudio.duration)}`;
+                }
+            });
+
+            // Обработчики для кнопок перемотки
+            backwardBtn.addEventListener('click', () => {
+                if (currentAudio && currentAudioType !== 'silence') {
+                    currentAudio.currentTime = Math.max(0, currentAudio.currentTime - 15);
+                    messageDiv.textContent = 'Перемотка на 15 секунд назад';
+                }
+            });
+
+            forwardBtn.addEventListener('click', () => {
+                if (currentAudio && currentAudioType !== 'silence') {
+                    currentAudio.currentTime = Math.min(currentAudio.duration, currentAudio.currentTime + 15);
+                    messageDiv.textContent = 'Перемотка на 15 секунд вперед';
+                }
+            });
+
+            // Функция обновления отображения таймера
+            function updateTimerDisplay() {
+                const displayMinutes = Math.floor(secondsElapsed / 60);
+                const displaySeconds = secondsElapsed % 60;
+
+                minutesDisplay.textContent = String(displayMinutes).padStart(2, '0');
+                secondsDisplay.textContent = String(displaySeconds).padStart(2, '0');
+            }
+
+            // Функция воспроизведения выбранного аудио
+            // Функция воспроизведения выбранного аудио
+            function playSelectedAudio() {
+                // Остановка всех аудио
+                Object.keys(audioInfo).forEach(key => {
+                    const audioEl = document.getElementById(key);
+
+                    if (audioEl) {
+                        audioEl.pause();
+                        audioEl.currentTime = 0;
+                    }
+                });
+
+                // Получаем выбранное аудио
+                currentAudioType = audioSelect.value;
+                const audioObj = audioInfo[currentAudioType];
+
+                // Если аудио отсутствует или это тишина
+                if (!audioObj || currentAudioType === 'silence') {
+                    currentAudio = null;
+                    audioSlider.disabled = true;
+                    backwardBtn.disabled = true;
+                    forwardBtn.disabled = true;
+                    return;
+                }
+
+                currentAudio = document.getElementById(currentAudioType);
+                audioSlider.disabled = false;
+                backwardBtn.disabled = false;
+                forwardBtn.disabled = false;
+
+                // Проверяем, есть ли сохраненная позиция для этого аудио
+                const lastPosition = getLastPlaybackPosition(currentAudioType);
+                if (lastPosition > 0) {
+                    currentAudio.currentTime = lastPosition;
+                    messageDiv.textContent = `Воспроизведение начато с последней позиции: ${formatTime(lastPosition)}`;
+                }
+
+                // Устанавливаем зацикливание в зависимости от настроек
+                currentAudio.loop = loopCheckbox.checked;
+
+                // Для всех аудио
+                if (currentAudio) {
+                    currentAudio.play().catch(e => {
+                        console.error('Ошибка воспроизведения аудио:', e);
+                        messageDiv.textContent = 'Ошибка воспроизведения аудио. Возможно, браузер блокирует автоматическое воспроизведение.';
+                    });
+
+                    // Если это короткое аудио без зацикливания, настраиваем интервал
+                    if (!audioObj.isLoop) {
+                        lastIntervalTime = 0;
+                    }
+                }
+
+                // Запускаем интервал для обновления времени аудио
+                clearInterval(audioUpdateInterval);
+                audioUpdateInterval = setInterval(updateAudioTimeDisplay, 500);
+            }
+
+            // Функция для воспроизведения короткого аудио
+            function playShortAudio() {
+                if (currentAudio && !isPaused) {
+                    currentAudio.currentTime = 0;
+                    currentAudio.play().catch(e => {
+                        console.error('Ошибка воспроизведения короткого аудио:', e);
+                    });
+                }
+            }
+
+            // Функция запуска таймера
+            function startTimer() {
+                completeAudio.pause();
+                // Получаем значение таймера в зависимости от выбора
+                let timerValue;
+                if (timerSelect.value === 'custom') {
+                    timerValue = parseInt(customMinutesInput.value) || 0;
+                } else {
+                    timerValue = parseInt(timerSelect.value);
+                }
+
+                totalSeconds = timerValue * 60; // Переводим минуты в секунды
+
+                // Обновляем интерфейс
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                stopBtn.disabled = false;
+                audioSelect.disabled = true;
+                timerSelect.disabled = true;
+                customMinutesInput.disabled = true;
+                reminderCheckbox.disabled = true;
+                intervalSelect.disabled = true;
+                loopCheckbox.disabled = true;
+
+                messageDiv.textContent = timerValue > 0
+                    ? `Медитация начата на ${timerValue} минут`
+                    : 'Медитация начата без ограничения времени';
+
+                // Воспроизводим выбранный звук
+                playSelectedAudio();
+
+                // Начинаем отсчет
+                lastReminderTime = 0;
+                lastIntervalTime = 0;
+                secondsElapsed = 0;
+                updateTimerDisplay();
+
+                timerInterval = setInterval(() => {
+                    if (!isPaused) {
+                        secondsElapsed++;
+
+                        // Проверяем, нужно ли воспроизвести звук напоминания
+                        if (reminderCheckbox.checked &&
+                            Math.floor(secondsElapsed / 60) >= lastReminderTime + 10) {
+                            reminderAudio.play().catch(e => console.error('Не удалось воспроизвести звук напоминания:', e));
+                            lastReminderTime = Math.floor(secondsElapsed / 60);
+                        }
+
+                        // Проверяем, нужно ли воспроизвести короткое аудио по интервалу
+                        const intervalValue = parseInt(intervalSelect.value);
+                        if (!audioInfo[currentAudioType]?.isLoop &&
+                            currentAudio &&
+                            Math.floor(secondsElapsed / 60) >= lastIntervalTime + intervalValue) {
+                            playShortAudio();
+                            lastIntervalTime = Math.floor(secondsElapsed / 60);
+                        }
+
+                        // Проверяем, закончилось ли время (если установлено)
+                        if (totalSeconds > 0 && secondsElapsed >= totalSeconds) {
+                            clearInterval(timerInterval);
+                            completeAudio.play().catch(e => console.error('Не удалось воспроизвести звук завершения:', e));
+                            stopMeditation();
+                            messageDiv.textContent = 'Медитация завершена!';
+                        }
+
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+
+            // Функция остановки медитации
+            function stopMeditation() {
+                clearInterval(timerInterval);
+                clearInterval(audioUpdateInterval);
+
+                // Остановка аудио
+                if (currentAudio) {
+                    // Сохраняем последнюю позицию перед остановкой
+                    saveLastPlaybackPosition(currentAudioType, currentAudio.currentTime);
+                    currentAudio.pause();
+                }
+
+                // Сброс состояния интерфейса
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                stopBtn.disabled = true;
+                audioSelect.disabled = false;
+                timerSelect.disabled = false;
+                customMinutesInput.disabled = false;
+                reminderCheckbox.disabled = false;
+                intervalSelect.disabled = false;
+                loopCheckbox.disabled = false;
+                audioSlider.disabled = true;
+                backwardBtn.disabled = true;
+                forwardBtn.disabled = true;
+
+                isPaused = false;
+                pauseBtn.textContent = 'Пауза';
+
+                secondsElapsed = 0;
+                updateTimerDisplay();
+                audioTimeDisplay.textContent = '00:00 / 00:00';
+                audioSlider.value = 0;
+
+                // Обновляем отображение селектора интервала
+                const selectedAudio = audioSelect.value;
+                const audioObj = audioInfo[selectedAudio];
+                if (audioObj && !audioObj.isLoop && selectedAudio !== 'silence') {
+                    intervalContainer.style.display = 'flex';
+                } else {
+                    intervalContainer.style.display = 'none';
+                }
+
+                // Обновляем кнопки таймлайнов с учетом последней сессии
+                createTimelineButtons(selectedAudio);
+            }
+
+            // Обработка событий аудио
+            function setupAudioEvents() {
+                Object.values(audioInfo).forEach(item => {
+                    if (item.element) {
+                        // Событие окончания аудио
+                        item.element.addEventListener('ended', () => {
+                            if (!loopCheckbox.checked && item.element === currentAudio) {
+                                console.log('Аудио закончилось без зацикливания');
+                                // Для коротких аудио просто ждем следующего интервала
+                                if (!item.isLoop) return;
+
+                                // Для длинных аудио с выключенным зацикливанием просто останавливаемся
+                                item.element.pause();
+                                item.element.currentTime = 0;
+                            }
+                        });
+
+                        // Событие загрузки метаданных для настройки ползунка
+                        item.element.addEventListener('loadedmetadata', () => {
+                            if (item.element === currentAudio) {
+                                audioSlider.min = 0;
+                                audioSlider.max = item.element.duration;
+                                audioSlider.value = item.element.currentTime;
+                                updateAudioTimeDisplay();
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Обработчики событий
+            startBtn.addEventListener('click', startTimer);
+
+            pauseBtn.addEventListener('click', () => {
+                isPaused = !isPaused;
+
+                if (isPaused) {
+                    pauseBtn.textContent = 'Продолжить';
+                    if (currentAudio) {
+                        currentAudio.pause();
+                    }
+                    messageDiv.textContent = 'Медитация приостановлена';
+                } else {
+                    pauseBtn.textContent = 'Пауза';
+                    if (currentAudio) {
+                        currentAudio.play().catch(e => console.error('Ошибка воспроизведения:', e));
+                    }
+                    messageDiv.textContent = 'Медитация продолжается';
+                }
+            });
+
+            stopBtn.addEventListener('click', () => {
+                stopMeditation();
+                messageDiv.textContent = 'Медитация остановлена';
+            });
+
+            // Добавляем событие изменения для зацикливания
+            loopCheckbox.addEventListener('change', () => {
+                // Применяем настройку зацикливания к текущему аудио, если оно играет
+                if (currentAudio) {
+                    currentAudio.loop = loopCheckbox.checked;
+                }
+            });
+
+            // Инициализация отображения селектора интервала и таймлайнов при загрузке
+            const selectedAudio = audioSelect.value;
+            const audioObj = audioInfo[selectedAudio];
+            if (audioObj && !audioObj.isLoop && selectedAudio !== 'silence') {
+                intervalContainer.style.display = 'flex';
+            } else {
+                intervalContainer.style.display = 'none';
+            }
+
+            createTimelineButtons(selectedAudio);
+            setupAudioEvents();
+
+            // Проверяем, было ли последнее воспроизведение
+            // const lastPlayedAudio = localStorage.getItem('last_played_audio');
+            // if (lastPlayedAudio && audioInfo[lastPlayedAudio]) {
+            //     audioSelect.value = lastPlayedAudio;
+            //     audioSelect.dispatchEvent(new Event('change'));
+            // }
+
+            // Предварительная загрузка аудио
+            function preloadAudio() {
+                Object.values(audioInfo).forEach(item => {
+                    if (item.element) {
+                        item.element.load();
+                    }
+                });
+                reminderAudio.load();
+                completeAudio.load();
+            }
+
+            preloadAudio();
+        });
+    </script>
+
+    <script>
+        // Регистрация Service Worker для PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker зарегистрирован:', reg))
+                    .catch(err => console.log('Ошибка регистрации Service Worker:', err));
+            });
+        }
+    </script>
+
+
+    <script>
+
+        // Функция для отображения лоадера
+        function showLoader(message = 'Загрузка...', status = 'Пожалуйста, подождите...') {
+            // Обновляем текст в лоадере
+            document.getElementById('loading-file').textContent = message;
+            document.getElementById('loading-status').textContent = status;
+
+            // Сбрасываем прогресс-бар
+            document.getElementById('progress-bar').style.width = '0%';
+
+            // Показываем лоадер
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('meditation-container').style.display = 'none';
+        }
+
+        // Функция для скрытия лоадера
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('meditation-container').style.display = 'block';
+        }
+
+        // Функция для обновления прогресса
+        function updateLoaderProgress(percent, message = null, status = null) {
+            // Обновляем прогресс-бар
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+
+            // Обновляем сообщения, если они предоставлены
+            if (message) {
+                document.getElementById('loading-file').textContent = message;
+            }
+
+            if (status) {
+                document.getElementById('loading-status').textContent = status || `Прогресс: ${percent}%`;
+            } else {
+                document.getElementById('loading-status').textContent = `Прогресс: ${percent}%`;
+            }
+        }
+    </script>
+</body>
+
+</html>
