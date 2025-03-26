@@ -2,8 +2,8 @@ const CACHE_NAME = 'media-loader-cache-v1';
 const urlsToCache = [
     './index.html',
     './manifest.json',
-    './icons/icon-192x192.png',
-    './icons/icon-512x512.png',
+    './icons/192.png',
+    './icons/512.png',
     './audio/hoff_1min.mp3', './audio/hoff_full.mp3', './audio/gita.m4a', './audio/estas.m4a', './audio/deputat_monk.mp3', './audio/imram.m4a', './audio/xxx.mp3', './audio/xxx-2.mp3', './audio/zvon.mp3',
 ];
 
