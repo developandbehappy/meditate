@@ -636,7 +636,6 @@
                     populateSelect(audioInfo, 'audio-select');
                     hideLoader();
                 });
-
             }
 
             // Получаем элементы DOM
@@ -1268,9 +1267,6 @@
         function showLoader(message = 'Загрузка...', status = 'Пожалуйста, подождите...') {
             // Обновляем текст в лоадере
             document.getElementById('loading-status').textContent = status;
-
-            // Сбрасываем прогресс-бар
-            document.getElementById('progress-bar').style.width = '0%';
 
             // Показываем лоадер
             document.getElementById('loader').style.display = 'flex';
