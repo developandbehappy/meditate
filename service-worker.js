@@ -4,6 +4,9 @@ const urlsToCache = [
     './manifest.json',
     './icons/192.png',
     './icons/512.png',
+    './audio/samadhi.mp3',
+    './audio/samadhi2.mp3',
+    './audio/samadhi3.mp3',
     './audio/hoff_1min.mp3', './audio/hoff_full.mp3', './audio/gita.m4a', './audio/estas.m4a', './audio/deputat_monk.mp3', './audio/imram.m4a', './audio/xxx.mp3', './audio/xxx-2.mp3', './audio/zvon.mp3',
 ];
 
