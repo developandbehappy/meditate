@@ -1,13 +1,24 @@
-const CACHE_NAME = 'media-loader-cache-v5';
+const CACHE_NAME = 'media-loader-cache-v6';
 const urlsToCache = [
     './index.html',
     './manifest.json',
     './icons/192.png',
     './icons/512.png',
-    './audio/samadhi.mp3',
-    './audio/samadhi2.mp3',
-    './audio/samadhi3.mp3',
-    './audio/hoff_1min.mp3', './audio/hoff_full.mp3', './audio/gita.m4a', './audio/estas.m4a', './audio/deputat_monk.mp3', './audio/imram.m4a', './audio/xxx.mp3', './audio/xxx-2.mp3', './audio/zvon.mp3',
+    "./audio/deputat_monk.mp3",
+    "./audio/dyh_20sek.m4a",
+    "./audio/end.m4a",
+    "./audio/estas.m4a",
+    "./audio/gita.m4a",
+    "./audio/hoff_1min.mp3",
+    "./audio/hoff_full.mp3",
+    "./audio/imram.m4a",
+    "./audio/kvadrat7.m4a",
+    "./audio/samadhi.mp3",
+    "./audio/samadhi2.mp3",
+    "./audio/samadhi3.mp3",
+    "./audio/xxx-2.mp3",
+    "./audio/xxx.mp3",
+    "./audio/zvon.mp3"
 ];
 
 // Установка Service Worker
