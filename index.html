@@ -1224,6 +1224,37 @@
                 });
             }
 
+            // Функция для отображения лоадера
+            function showLoader(message = 'Загрузка...', status = 'Пожалуйста, подождите...') {
+                // Обновляем текст в лоадере
+                document.getElementById('loading-status').textContent = status;
+
+                // Показываем лоадер
+                document.getElementById('loader').style.display = 'flex';
+                meditationContainer.style.display = 'none';
+            }
+
+            // Функция для скрытия лоадера
+            function hideLoader() {
+                document.getElementById('loader').style.display = 'none';
+
+                if (isAuthenticated) {
+                    meditationContainer.style.display = 'block';
+                }
+            }
+
+            // Функция для обновления прогресса
+            function updateLoaderProgress(percent, message = null, status = null) {
+                // Обновляем прогресс-бар
+                document.getElementById('progress-bar').style.width = `${percent}%`;
+
+                if (status) {
+                    document.getElementById('loading-status').textContent = status || `Прогресс: ${percent}%`;
+                } else {
+                    document.getElementById('loading-status').textContent = `Прогресс: ${percent}%`;
+                }
+            }
+
             // Обработчики событий
             startBtn.addEventListener('click', startTimer);
 
@@ -1300,38 +1331,6 @@
                     .then(reg => console.log('Service Worker зарегистрирован:', reg))
                     .catch(err => console.log('Ошибка регистрации Service Worker:', err));
             });
-        }
-    </script>
-
-
-    <script>
-
-        // Функция для отображения лоадера
-        function showLoader(message = 'Загрузка...', status = 'Пожалуйста, подождите...') {
-            // Обновляем текст в лоадере
-            document.getElementById('loading-status').textContent = status;
-
-            // Показываем лоадер
-            document.getElementById('loader').style.display = 'flex';
-            document.getElementById('meditation-container').style.display = 'none';
-        }
-
-        // Функция для скрытия лоадера
-        function hideLoader() {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('meditation-container').style.display = 'block';
-        }
-
-        // Функция для обновления прогресса
-        function updateLoaderProgress(percent, message = null, status = null) {
-            // Обновляем прогресс-бар
-            document.getElementById('progress-bar').style.width = `${percent}%`;
-
-            if (status) {
-                document.getElementById('loading-status').textContent = status || `Прогресс: ${percent}%`;
-            } else {
-                document.getElementById('loading-status').textContent = `Прогресс: ${percent}%`;
-            }
         }
     </script>
 </body>
