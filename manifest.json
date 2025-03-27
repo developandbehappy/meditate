@@ -1,8 +1,8 @@
 {
-    "name": "Загрузчик Медиа Файлов",
-    "short_name": "Медиа Лоадер",
-    "description": "Приложение для загрузки и проигрывания аудио и видео файлов",
-    "start_url": "/index.html",
+    "name": "Приложение для медитации",
+    "short_name": "Медитации",
+    "description": "Приложение для медитации",
+    "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#3498db",
