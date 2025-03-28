@@ -1167,6 +1167,7 @@
                 updateTimerDisplay();
 
                 timerInterval = setInterval(() => {
+                    console.log("111", 111);
                     if (!isPaused) {
                         secondsElapsed++;
 
@@ -1189,8 +1190,8 @@
                         // Проверяем, закончилось ли время (если установлено)
                         if (totalSeconds > 0 && secondsElapsed >= totalSeconds) {
                             clearInterval(timerInterval);
-                            completeAudio.play().catch(e => console.error('Не удалось воспроизвести звук завершения:', e));
                             stopMeditation();
+                            completeAudio.play().catch(e => console.error('Не удалось воспроизвести звук завершения:', e));
                             messageDiv.textContent = 'Медитация завершена!';
                         }
 
@@ -1210,6 +1211,8 @@
                     saveLastPlaybackPosition(currentAudioType, currentAudio.currentTime);
                     currentAudio.pause();
                 }
+
+
 
                 // Сброс состояния интерфейса
                 startBtn.disabled = false;
