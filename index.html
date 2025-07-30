@@ -488,6 +488,7 @@
                     <div id="timeline-buttons"></div>
                 </div>
 
+                <div id="track-description" style="color: #666; margin-top: 0.3em;"></div>
                 <div class="audio-progress">
                     <div class="current-time">
                         <span id="audio-time-display">Воспроизведение: 00:00 / 00:00</span>
@@ -849,6 +850,68 @@
                     timeLines: [{ name: 'Начало', time: 0 }],
                     isLoop: false
                 },
+                'lam': {
+                    id: 'lam',
+                    src: './audio/ЛАМ.m4a',
+                    label: 'ЛАМ 1-я чакра',
+                    description: "1-я чакра Муладхара (Корневая чакра) Расположение: У основания позвоночника",
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: true
+                },
+                'vam': {
+                    id: 'vam',
+                    src: './audio/ВАМ.m4a',
+                    label: 'ВАМ 2-я чакра',
+                    description: "2-я чакра Свадхистана (Сакральная чакра) Расположение: Чуть ниже пупка",
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: true
+                },
+
+                'pam': {
+                    id: 'pam',
+                    src: './audio/РАМ.m4a',
+                    label: 'РАМ 3-я чакра',
+                    description: "3-я чакра Манипура (Чакра солнечного сплетения) Расположение: Область солнечного сплетения",
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: true
+                },
+                'yam': {
+                    id: 'yam',
+                    src: './audio/ЯМ.m4a',
+                    label: 'ЯМ 4-я чакра',
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    description: "4-я чакра Анахата (Сердечная чакра) Расположение: Центр груди",
+                    isLoop: true
+                },
+                'xam': {
+                    id: 'xam',
+                    src: './audio/ХАМ.m4a',
+                    label: 'ХАМ 5-я чакра',
+                    description: "5-я чакра Вишуддха (Горловая чакра) Расположение: Область горла",
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: true
+                },
+                'sham': {
+                    id: 'sham',
+                    src: './audio/ШАМ.m4a',
+                    label: 'ШАМ 6-я чакра',
+                    description: "6-я чакра Аджна (Чакра третьего глаза) Расположение: Между бровями",
+
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: true
+                },
+                'om': {
+                    id: 'om',
+                    src: './audio/ОМ.m4a',
+                    label: 'ОМ 7-я чакра',
+                    description: "7-я чакра Сахасрара (Коронная чакра) Расположение: Верхушка головы",
+                    timeLines: [{ name: 'Начало', time: 0 }],
+                    isLoop: true
+                },
+
+
+
+
                 'silence': {
                     element: null,
                     timeLines: [],
@@ -995,6 +1058,17 @@
                     intervalContainer.style.display = 'none';
                 }
 
+                const descElem = document.getElementById('track-description');
+                if (audioObj.description) {
+                    descElem.textContent = audioObj.description;
+                    descElem.style.display = '';
+                } else {
+                    descElem.textContent = '';
+                    descElem.style.display = 'none';
+                }
+
+
+
                 createTimelineButtons(selectedAudio);
             });
 
@@ -1085,6 +1159,8 @@
                     forwardBtn.disabled = true;
                     return;
                 }
+
+
 
                 currentAudio = document.getElementById(currentAudioType);
                 audioSlider.disabled = false;
